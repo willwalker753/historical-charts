@@ -3,11 +3,12 @@ import Citations from "./Citations";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { createSeries, processOver, processOut } from "../util/functions";
-import { populationData } from "../util/constants";
+import { createSeries, processOver, processOut, printInflationValues } from "../util/functions";
+import { populationData, cpiInflationData } from "../util/constants";
 import "../styles/home.css";
 
 am4core.useTheme(am4themes_animated);
+am4core.options.autoDispose = true;
 
 class Home extends Component {
     constructor(props) {
@@ -20,10 +21,26 @@ class Home extends Component {
 
     componentDidMount() {
         let chart = am4core.create("main-line-chart", am4charts.XYChart);
+
         let xAxis = chart.xAxes.push(new am4charts.ValueAxis());
+            xAxis.title.text = "Year"
+            xAxis.max = 2020;
+            xAxis.renderer.labels.template.adapter.add("text", (text) => {
+                if(text) { text = text.replace(",", "") }
+                return text;
+            });
+
         let yAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        console.log(populationData)
+            yAxis.title.text = "Percent Value Relative to Current";
+            yAxis.min = 0;
+            yAxis.max = 100;
+            yAxis.renderer.labels.template.adapter.add("text", (text) => {
+                return text + "%";
+            });
+
         createSeries(chart, "U.S. Population", populationData);
+        createSeries(chart, "CPI Inflation", cpiInflationData);
+
 
         chart.legend = new am4charts.Legend();
             chart.legend.position = "right";
@@ -46,7 +63,7 @@ class Home extends Component {
         return (
             <div>
                 <div id="main-line-chart"></div>
-                {/* <button id="button">I'm a button</button> */}
+                <p>Please don't take this chart too seriously. I don't know what I'm doing</p>
                 <Citations />  
             </div>
         );
