@@ -7,7 +7,7 @@ const Citations = () => {
             <h3>Citations:</h3>
             {citations.map(item => {
                 return(
-                    <p key={item.chartName}>
+                    <p key={item.link}>
                         <strong>"{item.chartName}"</strong>&nbsp;
                         <em>
                             {item.desc}&nbsp;Retrieved from&nbsp;

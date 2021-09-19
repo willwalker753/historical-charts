@@ -1,6 +1,6 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
-import { rawCpiInflationData } from "./constants";
+import { rawCpiInflationData, rawGdpData } from "./constants";
 
 export const createSeries = (chart, name, data) => {
     let series = chart.series.push(new am4charts.LineSeries());
@@ -110,9 +110,44 @@ export const printInflationValues = async () => {
         }
     }
     console.log(result)
-    // {
-    //     year: "1910",
-    //     count: 92228531
-    // }
-    
+}
+
+export const printGdpValues = async () => {
+    let result = [{
+        year: "",
+        count: ""
+    }];
+    let resultIndex = 0;
+    let columnIndex = 0;
+    let tempString = "";
+
+    for(let i=0; i<rawGdpData.length; i++) {
+        if(rawGdpData.charAt(i) === "+") {
+            result.push({
+                year: "",
+                count: ""
+            });
+            resultIndex++;
+            columnIndex = 0;
+        }
+        else if(rawGdpData.charAt(i) === "@") {
+            switch(columnIndex) {
+                case 0: {
+                    result[resultIndex].year = tempString;
+                    break;
+                }
+                case 2: {
+                    result[resultIndex].count = tempString;
+                    break;
+                }
+                default:  break;
+            }
+            columnIndex++;
+            tempString = "";
+        }
+        else {
+            tempString = tempString + rawGdpData.charAt(i);
+        }
+    }
+    console.log(result);
 }
